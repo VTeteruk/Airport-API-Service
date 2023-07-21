@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from crews.models import Position, Crew
-from crews.permissions import IsAdminOrReadOnly
+from airport_service_api.permissions import IsAdminOrReadOnly
 from crews.serializers import PositionSerializer, CrewSerializer
 
 
