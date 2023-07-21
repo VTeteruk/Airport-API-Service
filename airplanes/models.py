@@ -15,3 +15,6 @@ class Airplane(models.Model):
     airplane_type = models.ForeignKey(
         to=AirplaneType, on_delete=models.CASCADE, related_name="airplanes"
     )
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.airplane_type})"
