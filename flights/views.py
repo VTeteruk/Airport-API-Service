@@ -1,13 +1,17 @@
 from django.db.migrations import serializer
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-
 from airport_service_api.permissions import IsAdminOrReadOnly
 from flights.models import City, Airport, Route, Flight
-from flights.serializers import CitySerializer, AirportSerializer, \
-    RouteSerializer, FlightListSerializer, FlightSerializer, \
-    RouteListSerializer, AirportListSerializer
+from flights.serializers import (
+    CitySerializer,
+    AirportSerializer,
+    RouteSerializer,
+    FlightListSerializer,
+    FlightSerializer,
+    RouteListSerializer,
+    AirportListSerializer
+)
 
 
 class CityView(ModelViewSet):
@@ -41,7 +45,6 @@ class RouteView(ModelViewSet):
 class FlightView(ModelViewSet):
     serializer_class = FlightSerializer
     queryset = Flight.objects.all()
-    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
         if self.request.method == "GET":

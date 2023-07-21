@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import UniqueConstraint
 from rest_framework.exceptions import ValidationError
 
 from flights.models import Flight
@@ -40,7 +39,7 @@ class Ticket(models.Model):
             1 <= row <= rows
         ):
             raise error_to_raise(
-                f"Incorrect value of row or seat"
+                "Incorrect value of row or seat"
             )
 
     def clean(self):
@@ -53,10 +52,16 @@ class Ticket(models.Model):
         )
 
     def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
+        self,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None
     ):
         self.full_clean()
-        return super(Ticket, self).save(force_insert, force_update, using, update_fields)
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
     def __str__(self) -> str:
         return f"row-{self.row}, seat-{self.seat} ({self.flight.route})"

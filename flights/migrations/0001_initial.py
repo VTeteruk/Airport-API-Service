@@ -99,7 +99,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "crews",
-                    models.ManyToManyField(related_name="flights", to="crews.crew"),
+                    models.ManyToManyField(
+                        related_name="flights", to="crews.crew"
+                    ),
                 ),
                 (
                     "route",
