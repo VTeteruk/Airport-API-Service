@@ -31,4 +31,7 @@ urlpatterns = [
 
     # Flights
     path("api/flights/", include("flights.urls", namespace="flights")),
+
+    # Tickets
+    path("api/tickets/", include("tickets.urls", namespace="tickets"))
 ]
