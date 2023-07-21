@@ -9,9 +9,13 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class AirportSerializer(serializers.ModelSerializer):
-    city = serializers.SlugRelatedField(
-        many=False, queryset=City.objects.all(), slug_field="name"
-    )
+    class Meta:
+        model = Airport
+        fields = ("id", "name", "city")
+
+
+class AirportListSerializer(serializers.ModelSerializer):
+    city = serializers.StringRelatedField()
 
     class Meta:
         model = Airport
@@ -19,12 +23,14 @@ class AirportSerializer(serializers.ModelSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    source = serializers.SlugRelatedField(
-        many=False, queryset=Airport.objects.all(), slug_field="name"
-    )
-    destination = serializers.SlugRelatedField(
-        many=False, queryset=Airport.objects.all(), slug_field="name"
-    )
+    class Meta:
+        model = Route
+        fields = ("id", "source", "destination", "distance")
+
+
+class RouteListSerializer(serializers.ModelSerializer):
+    source = serializers.StringRelatedField()
+    destination = serializers.StringRelatedField()
 
     class Meta:
         model = Route
