@@ -8,12 +8,18 @@ class City(models.Model):
     name = models.CharField(max_length=255)
     is_capital = models.BooleanField()
 
+    def __str__(self) -> str:
+        return f"{self.name} (Capital)" if self.is_capital else self.name
+
 
 class Airport(models.Model):
     name = models.CharField(max_length=255)
     city = models.ForeignKey(
         to=City, on_delete=models.CASCADE, related_name="airports"
     )
+
+    def __str__(self) -> str:
+        return f"{self.name}, {self.city}"
 
 
 class Route(models.Model):
@@ -24,6 +30,9 @@ class Route(models.Model):
         to=Airport, on_delete=models.CASCADE, related_name="destination_routes"
     )
     distance = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.source} - {self.destination}"
 
 
 class Flight(models.Model):

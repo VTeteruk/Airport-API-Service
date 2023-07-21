@@ -14,3 +14,6 @@ class Crew(models.Model):
     position = models.ForeignKey(
         to=Position, on_delete=models.CASCADE, related_name="crews"
     )
+
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.last_name} ({self.position})"
