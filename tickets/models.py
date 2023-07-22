@@ -11,6 +11,9 @@ class Order(models.Model):
         to=get_user_model(), on_delete=models.CASCADE, related_name="orders"
     )
 
+    def __str__(self) -> str:
+        return str(self.created_at)
+
 
 class Ticket(models.Model):
     row = models.IntegerField()

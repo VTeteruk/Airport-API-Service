@@ -11,6 +11,9 @@ class City(models.Model):
     def __str__(self) -> str:
         return f"{self.name} (Capital)" if self.is_capital else self.name
 
+    class Meta:
+        verbose_name_plural = "cities"
+
 
 class Airport(models.Model):
     name = models.CharField(max_length=255)
