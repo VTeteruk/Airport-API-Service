@@ -1,4 +1,5 @@
 from django.db.migrations import serializer
+from django.db.models import F, Count
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from airport_service_api.permissions import IsAdminOrReadOnly
@@ -45,6 +46,16 @@ class RouteView(ModelViewSet):
 class FlightView(ModelViewSet):
     serializer_class = FlightSerializer
     queryset = Flight.objects.all()
+
+    def get_queryset(self):
+        queryset = self.queryset
+        if self.action == "list":
+            queryset = (
+                queryset
+                .select_related("airplane")
+                .annotate(seats_available=F("airplane__rows") * F("airplane__seats_in_row") - Count("tickets"))
+            ).order_by("id")
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "retrieve":
