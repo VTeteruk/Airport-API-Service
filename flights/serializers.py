@@ -56,7 +56,6 @@ class FlightListSerializer(serializers.ModelSerializer):
     airplane = serializers.StringRelatedField()
     seats_available = serializers.IntegerField(read_only=True)
 
-
     class Meta:
         model = Flight
         fields = (

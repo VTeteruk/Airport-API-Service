@@ -1,6 +1,7 @@
 from django.db.migrations import serializer
 from django.db.models import F, Count
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, SAFE_METHODS, \
+    IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 from airport_service_api.permissions import IsAdminOrReadOnly
 from flights.models import City, Airport, Route, Flight
@@ -46,6 +47,7 @@ class RouteView(ModelViewSet):
 class FlightView(ModelViewSet):
     serializer_class = FlightSerializer
     queryset = Flight.objects.all()
+    permission_classes = (IsAuthenticated, IsAdminOrReadOnly)
 
     def get_queryset(self):
         queryset = self.queryset
