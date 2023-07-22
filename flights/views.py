@@ -10,7 +10,7 @@ from flights.serializers import (
     FlightListSerializer,
     FlightSerializer,
     RouteListSerializer,
-    AirportListSerializer
+    AirportListSerializer, FlightDetailSerializer
 )
 
 
@@ -47,6 +47,8 @@ class FlightView(ModelViewSet):
     queryset = Flight.objects.all()
 
     def get_serializer_class(self):
+        if self.action == "retrieve":
+            return FlightDetailSerializer
         if self.request.method == "GET":
             return FlightListSerializer
         return FlightSerializer

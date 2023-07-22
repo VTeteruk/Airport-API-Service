@@ -65,3 +65,34 @@ class FlightListSerializer(serializers.ModelSerializer):
             "departure_time",
             "arrival_time"
         )
+
+
+class FlightDetailSerializer(serializers.ModelSerializer):
+    route = serializers.StringRelatedField()
+    crews = serializers.StringRelatedField(many=True)
+    airplane = serializers.StringRelatedField()
+    taken_seats = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Flight
+        fields = (
+            "id",
+            "route",
+            "crews",
+            "airplane",
+            "departure_time",
+            "arrival_time",
+            "taken_seats",
+        )
+
+    def get_seat_and_row(self, ticket):
+        return {"row": ticket.row, "seat": ticket.seat}
+
+    def get_taken_seats(self, flight):
+        return [self.get_seat_and_row(ticket) for ticket in
+                flight.tickets.all()]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["taken_seats"] = self.get_taken_seats(instance)
+        return data
