@@ -18,7 +18,8 @@ class CreateTokenView(ObtainAuthToken):
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """Show information about current user"""
     serializer_class = UserSerializer
 
-    def get_object(self):
+    def get_object(self) -> get_user_model():
         return get_user_model().objects.get(id=self.request.user.id)

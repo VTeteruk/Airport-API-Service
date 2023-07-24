@@ -1,5 +1,6 @@
 from django.db.migrations import serializer
 from django.db.models import F, Count, QuerySet
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from airport_service_api.permissions import IsAdminOrReadOnly
@@ -34,6 +35,28 @@ class CityView(ModelViewSet):
 
         return queryset
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="name",
+                description="Filter by name",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="is_capital",
+                description=(
+                        "Filter by is_capital "
+                        "(ex. .../?is_capital=(0 or 1) 0-false, 1-true)"
+                ),
+                required=False,
+                type=str,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class AirportView(ModelViewSet):
     serializer_class = AirportSerializer
@@ -56,6 +79,25 @@ class AirportView(ModelViewSet):
         if city:
             queryset = queryset.filter(city__name__icontains=city)
         return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="name",
+                description="Filter by name",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="city",
+                description="Filter by city",
+                required=False,
+                type=str,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class RouteView(ModelViewSet):
@@ -81,6 +123,25 @@ class RouteView(ModelViewSet):
                 destination__name__icontains=destination
             )
         return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="source",
+                description="Filter by source",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="destination",
+                description="Filter by destination",
+                required=False,
+                type=str,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class FlightView(ModelViewSet):
@@ -118,3 +179,22 @@ class FlightView(ModelViewSet):
         if self.request.method == "GET":
             return FlightListSerializer
         return FlightSerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="source",
+                description="Filter by source",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="destination",
+                description="Filter by destination",
+                required=False,
+                type=str,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

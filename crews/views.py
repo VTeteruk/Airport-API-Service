@@ -1,4 +1,5 @@
 from django.db.models import QuerySet
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from crews.models import Position, Crew
@@ -19,6 +20,19 @@ class PositionView(ModelViewSet):
             queryset = queryset.filter(name__icontains=name)
 
         return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="name",
+                description="Filter by name",
+                required=False,
+                type=str
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class CrewView(ModelViewSet):
@@ -41,3 +55,28 @@ class CrewView(ModelViewSet):
             queryset = queryset.filter(last_name__icontains=last_name)
 
         return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="position",
+                description="Filter by position",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="first_name",
+                description="Filter by first_name",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="last_name",
+                description="Filter by last_name",
+                required=False,
+                type=str
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

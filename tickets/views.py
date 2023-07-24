@@ -1,3 +1,4 @@
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.viewsets import ModelViewSet
 from tickets.models import Order
 from tickets.serializers import OrderSerializer, OrderListSerializer
@@ -30,3 +31,22 @@ class OrderView(ModelViewSet):
         if self.request.method == "GET":
             return OrderListSerializer
         return OrderSerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="source",
+                description="Filter by source",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="destination",
+                description="Filter by destination",
+                required=False,
+                type=str,
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

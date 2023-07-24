@@ -1,4 +1,5 @@
 from django.db.models import QuerySet
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from airplanes.models import Airplane, AirplaneType
@@ -16,6 +17,19 @@ class BaseAirplaneViewSet(ModelViewSet):
         if name:
             queryset = queryset.filter(name__icontains=name)
         return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="name",
+                description="Filter by name",
+                required=False,
+                type=str
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class AirplaneView(BaseAirplaneViewSet):
