@@ -4,6 +4,8 @@ from rest_framework import status
 from django.urls import reverse
 from rest_framework.test import APIClient
 
+from airplanes.models import AirplaneType
+
 AIRPLANE_TYPE_URL = reverse("airplanes:airplanetype-list")
 
 
@@ -37,6 +39,17 @@ class AuthenticatedAirplaneTypeTest(TestCase):
         self.assertEquals(
             response.status_code, status.HTTP_403_FORBIDDEN
         )
+
+    def test_filtering_by_name(self) -> None:
+        AirplaneType.objects.create(
+            name="A",
+        )
+        AirplaneType.objects.create(
+            name="B",
+        )
+
+        response = self.client.get(AIRPLANE_TYPE_URL + "?name=B")
+        self.assertEquals(len(response.data["results"]), 1)
 
 
 class AdminAirplaneTypeTest(TestCase):

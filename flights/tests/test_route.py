@@ -4,7 +4,7 @@ from rest_framework import status
 from django.urls import reverse
 from rest_framework.test import APIClient
 
-from flights.models import Airport, City
+from flights.models import Airport, City, Route
 
 ROUTE_URL = reverse("flights:route-list")
 
@@ -48,6 +48,42 @@ class AuthenticatedRouteTest(TestCase):
         response = self.client.post(ROUTE_URL, route)
 
         self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_filtering_by_source(self) -> None:
+        Route.objects.create(
+            source=Airport.objects.create(
+                name="B",
+                city=City.objects.create(name="test", is_capital=True)
+            ),
+            destination=self.airport,
+            distance=100
+        )
+        Route.objects.create(
+            source=self.airport,
+            destination=self.airport,
+            distance=100
+        )
+
+        response = self.client.get(ROUTE_URL + "?source=B")
+        self.assertEquals(len(response.data["results"]), 1)
+
+    def test_filtering_by_destination(self) -> None:
+        Route.objects.create(
+            source=self.airport,
+            destination=Airport.objects.create(
+                name="B",
+                city=City.objects.create(name="test", is_capital=True)
+            ),
+            distance=100
+        )
+        Route.objects.create(
+            source=self.airport,
+            destination=self.airport,
+            distance=100
+        )
+
+        response = self.client.get(ROUTE_URL + "?destination=B")
+        self.assertEquals(len(response.data["results"]), 1)
 
 
 class AdminRouteTest(TestCase):

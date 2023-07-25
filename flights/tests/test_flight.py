@@ -8,7 +8,7 @@ from rest_framework.test import APIClient
 
 from airplanes.models import Airplane, AirplaneType
 from crews.models import Crew, Position
-from flights.models import Airport, City, Route
+from flights.models import Airport, City, Route, Flight
 
 FLIGHT_URL = reverse("flights:flight-list")
 
@@ -32,13 +32,14 @@ class AuthenticatedFlightTest(TestCase):
         )
         self.client.force_authenticate(self.user)
 
-    def test_show_flights(self) -> None:
-        response = self.client.get(FLIGHT_URL)
+        self.airplane = Airplane.objects.create(
+            name="test",
+            rows=10,
+            seats_in_row=10,
+            airplane_type=AirplaneType.objects.create(name="test")
+        )
 
-        self.assertEquals(response.status_code, status.HTTP_200_OK)
-
-    def test_do_not_allow_to_create_flight(self) -> None:
-        route = Route.objects.create(
+        self.route = Route.objects.create(
             source=Airport.objects.create(
                 name="test",
                 city=City.objects.create(name="test", is_capital=True)
@@ -49,6 +50,13 @@ class AuthenticatedFlightTest(TestCase):
             ),
             distance=100
         )
+
+    def test_show_flights(self) -> None:
+        response = self.client.get(FLIGHT_URL)
+
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_do_not_allow_to_create_flight(self) -> None:
         flight = {
             "crews": [
                 Crew.objects.create(
@@ -57,13 +65,8 @@ class AuthenticatedFlightTest(TestCase):
                     position=Position.objects.create(name="test")
                 ),
             ],
-            "route": route,
-            "airplane": Airplane.objects.create(
-                name="test",
-                rows=10,
-                seats_in_row=10,
-                airplane_type=AirplaneType.objects.create(name="test")
-            ),
+            "route": self.route,
+            "airplane": self.airplane,
             "departure_time": "2023-07-28T12:02:00Z",
             "arrival_time": "2023-08-28T12:02:00Z"
         }
@@ -71,6 +74,60 @@ class AuthenticatedFlightTest(TestCase):
         response = self.client.post(FLIGHT_URL, flight)
 
         self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def create_simple_flight(self) -> Flight:
+        return Flight.objects.create(
+            route=self.route,
+            airplane=self.airplane,
+            departure_time=datetime.now(),
+            arrival_time=datetime.now()
+        )
+
+    def test_filtering_by_source(self) -> None:
+        self.create_simple_flight()
+        self.create_simple_flight()
+        Flight.objects.create(
+            route=Route.objects.create(
+                source=Airport.objects.create(
+                    name="A",
+                    city=City.objects.create(name="test", is_capital=True)
+                ),
+                destination=Airport.objects.create(
+                    name="A",
+                    city=City.objects.create(name="test1", is_capital=True)
+                ),
+                distance=100
+            ),
+            airplane=self.airplane,
+            departure_time=datetime.now(),
+            arrival_time=datetime.now()
+        )
+
+        response = self.client.get(FLIGHT_URL + "?source=A")
+        self.assertEquals(len(response.data["results"]), 1)
+
+    def test_filtering_by_destination(self) -> None:
+        self.create_simple_flight()
+        self.create_simple_flight()
+        Flight.objects.create(
+            route=Route.objects.create(
+                source=Airport.objects.create(
+                    name="B",
+                    city=City.objects.create(name="test", is_capital=True)
+                ),
+                destination=Airport.objects.create(
+                    name="B",
+                    city=City.objects.create(name="test1", is_capital=True)
+                ),
+                distance=100
+            ),
+            airplane=self.airplane,
+            departure_time=datetime.now(),
+            arrival_time=datetime.now()
+        )
+
+        response = self.client.get(FLIGHT_URL + "?destination=B")
+        self.assertEquals(len(response.data["results"]), 1)
 
 
 class AdminFlightTest(TestCase):

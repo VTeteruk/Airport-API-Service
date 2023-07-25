@@ -4,6 +4,8 @@ from rest_framework import status
 from django.urls import reverse
 from rest_framework.test import APIClient
 
+from flights.models import City
+
 CITY_URL = reverse("flights:city-list")
 
 
@@ -40,6 +42,32 @@ class AuthenticatedCityTest(TestCase):
         response = self.client.post(CITY_URL, city)
 
         self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_filtering_by_name(self) -> None:
+        City.objects.create(
+            name="A",
+            is_capital=True
+        )
+        City.objects.create(
+            name="B",
+            is_capital=True
+        )
+
+        response = self.client.get(CITY_URL + "?name=B")
+        self.assertEquals(len(response.data["results"]), 1)
+
+    def test_filtering_by_is_capital(self) -> None:
+        City.objects.create(
+            name="A",
+            is_capital=False
+        )
+        City.objects.create(
+            name="B",
+            is_capital=True
+        )
+
+        response = self.client.get(CITY_URL + "?is_capital=1")
+        self.assertEquals(len(response.data["results"]), 1)
 
 
 class AdminCityTest(TestCase):

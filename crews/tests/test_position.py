@@ -4,6 +4,8 @@ from rest_framework import status
 from django.urls import reverse
 from rest_framework.test import APIClient
 
+from crews.models import Position
+
 POSITION_URL = reverse("crews:position-list")
 
 
@@ -37,6 +39,17 @@ class AuthenticatedPositionTest(TestCase):
         response = self.client.post(POSITION_URL, position)
 
         self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_filtering_by_name(self) -> None:
+        Position.objects.create(
+            name="A"
+        )
+        Position.objects.create(
+            name="B"
+        )
+
+        response = self.client.get(POSITION_URL + "?name=B")
+        self.assertEquals(len(response.data["results"]), 1)
 
 
 class AdminPositionTest(TestCase):
