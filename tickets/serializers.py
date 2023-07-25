@@ -22,6 +22,14 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = ("id", "row", "seat", "flight")
 
 
+class OrderListSerializer(serializers.ModelSerializer):
+    tickets = serializers.StringRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ("id", "created_at", "tickets")
+
+
 class OrderSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
 
@@ -37,10 +45,5 @@ class OrderSerializer(serializers.ModelSerializer):
                 Ticket.objects.create(order=order, **ticket_data)
             return order
 
-
-class OrderListSerializer(serializers.ModelSerializer):
-    tickets = serializers.StringRelatedField(many=True, read_only=True)
-
-    class Meta:
-        model = Order
-        fields = ("id", "created_at", "tickets")
+    def to_representation(self, instance):
+        return OrderListSerializer(instance).data

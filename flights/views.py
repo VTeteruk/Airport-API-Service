@@ -63,11 +63,6 @@ class AirportView(ModelViewSet):
     queryset = Airport.objects.all()
     permission_classes = (IsAuthenticated, IsAdminOrReadOnly)
 
-    def get_serializer_class(self) -> serializer:
-        if self.request.method == "GET":
-            return AirportListSerializer
-        return AirportSerializer
-
     def get_queryset(self) -> QuerySet:
         queryset = self.queryset
 
@@ -104,11 +99,6 @@ class RouteView(ModelViewSet):
     serializer_class = RouteSerializer
     queryset = Route.objects.all()
     permission_classes = (IsAuthenticated, IsAdminOrReadOnly)
-
-    def get_serializer_class(self) -> serializer:
-        if self.request.method == "GET":
-            return RouteListSerializer
-        return RouteSerializer
 
     def get_queryset(self) -> QuerySet:
         queryset = self.queryset
@@ -176,8 +166,6 @@ class FlightView(ModelViewSet):
     def get_serializer_class(self) -> serializer:
         if self.action == "retrieve":
             return FlightDetailSerializer
-        if self.request.method == "GET":
-            return FlightListSerializer
         return FlightSerializer
 
     @extend_schema(

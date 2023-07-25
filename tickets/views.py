@@ -27,11 +27,6 @@ class OrderView(ModelViewSet):
     def perform_create(self, serializer) -> None:
         serializer.save(user=self.request.user)
 
-    def get_serializer_class(self):
-        if self.request.method == "GET":
-            return OrderListSerializer
-        return OrderSerializer
-
     @extend_schema(
         parameters=[
             OpenApiParameter(

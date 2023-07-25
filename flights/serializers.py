@@ -8,12 +8,6 @@ class CitySerializer(serializers.ModelSerializer):
         fields = ("id", "name", "is_capital")
 
 
-class AirportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Airport
-        fields = ("id", "name", "city")
-
-
 class AirportListSerializer(serializers.ModelSerializer):
     city = serializers.StringRelatedField()
 
@@ -22,10 +16,13 @@ class AirportListSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "city")
 
 
-class RouteSerializer(serializers.ModelSerializer):
+class AirportSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Route
-        fields = ("id", "source", "destination", "distance")
+        model = Airport
+        fields = ("id", "name", "city")
+
+    def to_representation(self, instance):
+        return AirportListSerializer(instance).data
 
 
 class RouteListSerializer(serializers.ModelSerializer):
@@ -37,17 +34,13 @@ class RouteListSerializer(serializers.ModelSerializer):
         fields = ("id", "source", "destination", "distance")
 
 
-class FlightSerializer(serializers.ModelSerializer):
+class RouteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Flight
-        fields = (
-            "id",
-            "route",
-            "crews",
-            "airplane",
-            "departure_time",
-            "arrival_time"
-        )
+        model = Route
+        fields = ("id", "source", "destination", "distance")
+
+    def to_representation(self, instance):
+        return RouteListSerializer(instance).data
 
 
 class FlightListSerializer(serializers.ModelSerializer):
@@ -67,6 +60,22 @@ class FlightListSerializer(serializers.ModelSerializer):
             "arrival_time",
             "seats_available",
         )
+
+
+class FlightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Flight
+        fields = (
+            "id",
+            "route",
+            "crews",
+            "airplane",
+            "departure_time",
+            "arrival_time"
+        )
+
+    def to_representation(self, instance):
+        return FlightListSerializer(instance).data
 
 
 class FlightDetailSerializer(serializers.ModelSerializer):
