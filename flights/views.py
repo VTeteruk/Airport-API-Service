@@ -9,10 +9,7 @@ from flights.serializers import (
     CitySerializer,
     AirportSerializer,
     RouteSerializer,
-    FlightListSerializer,
     FlightSerializer,
-    RouteListSerializer,
-    AirportListSerializer,
     FlightDetailSerializer
 )
 

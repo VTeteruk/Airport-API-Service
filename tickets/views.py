@@ -1,7 +1,7 @@
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.viewsets import ModelViewSet
 from tickets.models import Order
-from tickets.serializers import OrderSerializer, OrderListSerializer
+from tickets.serializers import OrderSerializer
 
 
 class OrderView(ModelViewSet):
