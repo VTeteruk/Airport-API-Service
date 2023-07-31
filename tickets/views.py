@@ -22,7 +22,9 @@ class OrderView(ModelViewSet):
                 tickets__flight__route__destination__name__icontains=destination
             )
 
-        return queryset
+        return queryset.prefetch_related(
+                "tickets__flight__route__source", "tickets__flight__route__destination"
+            )
 
     def perform_create(self, serializer) -> None:
         serializer.save(user=self.request.user)

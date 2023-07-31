@@ -57,7 +57,7 @@ class CityView(ModelViewSet):
 
 class AirportView(ModelViewSet):
     serializer_class = AirportSerializer
-    queryset = Airport.objects.all()
+    queryset = Airport.objects.select_related("city")
     permission_classes = (IsAuthenticated, IsAdminOrReadOnly)
 
     def get_queryset(self) -> QuerySet:
@@ -109,7 +109,7 @@ class RouteView(ModelViewSet):
             queryset = queryset.filter(
                 destination__name__icontains=destination
             )
-        return queryset
+        return queryset.select_related("source", "destination", "source__city", "destination__city")
 
     @extend_schema(
         parameters=[
@@ -158,7 +158,13 @@ class FlightView(ModelViewSet):
             queryset = queryset.filter(
                 route__destination__name__icontains=destination
             )
-        return queryset
+        return queryset.select_related(
+            "route__source",
+            "route__destination",
+            "route__source__city",
+            "route__destination__city",
+            "airplane__airplane_type",
+        ).prefetch_related("crews__position")
 
     def get_serializer_class(self) -> serializer:
         if self.action == "retrieve":

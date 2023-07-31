@@ -36,7 +36,7 @@ class PositionView(ModelViewSet):
 
 
 class CrewView(ModelViewSet):
-    queryset = Crew.objects.all()
+    queryset = Crew.objects.select_related("position")
     serializer_class = CrewSerializer
     permission_classes = (IsAdminOrReadOnly, IsAuthenticated)
 
