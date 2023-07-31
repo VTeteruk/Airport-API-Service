@@ -6,7 +6,7 @@ ___
 
 ## DB structure
 
-![Airplane_service_db.png](README_images/Airplane_service_db.png)
+![Airplane_service_db.jpg](README_images/Airplane_service_db.jpg)
 
 ## Features
 
@@ -59,11 +59,11 @@ Thank you for using the Airport Service API! We hope it serves as a reliable and
 
 ## Screenshots
 
-![Airplane.png](README_images/Airplane.png)
-![Crew.png](README_images/Crew.png)
-![Register.png](README_images/Register.png)
-![Flights.png](README_images/Flights.png)
-![Orders.png](README_images/Orders.png)
-![Login.png](README_images/Login.png)
-![Profile.png](README_images/Profile.png)
-![documentation.png](README_images/documentation.png)
+![Airplane.jpg](README_images/Airplane.jpg)
+![Crew.jpg](README_images/Crew.jpg)
+![Register.jpg](README_images/Register.jpg)
+![Flights.jpg](README_images/Flights.jpg)
+![Orders.jpg](README_images/Orders.jpg)
+![Login.jpg](README_images/Login.jpg)
+![Profile.jpg](README_images/Profile.jpg)
+![documentation.jpg](README_images/documentation.jpg)
